@@ -103,3 +103,6 @@
 
 # github stuff
 !/.github/
+
+# docker
+!devop/docker-entrypoint.sh

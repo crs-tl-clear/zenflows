@@ -31,3 +31,6 @@
 
 # deps
 !/.deps/
+
+# docker
+!devop/docker-entrypoint.sh
