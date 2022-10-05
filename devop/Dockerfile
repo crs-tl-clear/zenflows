@@ -15,44 +15,38 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-ARG MIX_ENV=prod
+FROM elixir:1.13-alpine
 
-
-FROM elixir:1.13-alpine AS build
 ARG MIX_ENV
 ENV MIX_ENV=$MIX_ENV
+ENV MIX_HOME=/app/.mix
+ENV PATH=$PATH:/app/_build/"$MIX_ENV"/rel/zenflows/bin
 
 WORKDIR /app
 
-RUN mix do local.hex --force, local.rebar --force
+RUN set -eux; apk add --no-cache 	\
+	libstdc++ 			\
+	bash 				\
+	ncurses-libs 			\
+	openssl 			\
+	findutils
 
 COPY mix.exs mix.lock ./
 COPY conf/buildtime.exs conf/
 COPY .deps deps
-RUN mix deps.compile --only "$MIX_ENV"
-
 COPY conf conf
 COPY priv priv
 COPY src src
+
+RUN mix do local.hex --force, local.rebar --force
 RUN mix do compile, release
-
-
-FROM alpine:3.16 AS app
-ARG MIX_ENV
-ENV MIX_ENV=$MIX_ENV
-
-RUN apk add --no-cache libstdc++ ncurses-libs
 
 ARG USER=zenflows GROUP=zenflows
 RUN addgroup -S "$GROUP" && adduser -SG"$GROUP" "$USER"
 USER "$USER"
 
-WORKDIR /app
-
-COPY --from=build --chown="$USER:$GROUP" /app/_build/"$MIX_ENV"/rel/zenflows ./
+COPY devop/docker-entrypoint.sh /
+ENTRYPOINT ["/docker-entrypoint.sh"]
 
 EXPOSE 8000
-
-ENTRYPOINT ["bin/zenflows"]
-
-CMD ["start"]
+CMD ["zenflows", "start"]
