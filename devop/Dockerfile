@@ -28,8 +28,7 @@ RUN set -eux; apk add --no-cache 	\
 	libstdc++ 			\
 	bash 				\
 	ncurses-libs 			\
-	openssl 			\
-	findutils
+	openssl
 
 COPY mix.exs mix.lock ./
 COPY conf/buildtime.exs conf/
