@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/sh
 # Zenflows is designed to implement the Valueflows vocabulary,
 # written and maintained by srfsh <info@dyne.org>.
 # Copyright (C) 2021-2022 Dyne.org foundation <foundation@dyne.org>.

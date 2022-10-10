@@ -20,14 +20,13 @@ FROM elixir:1.13-alpine
 ARG MIX_ENV
 ENV MIX_ENV=$MIX_ENV
 ENV MIX_HOME=/app/.mix
-ENV PATH=$PATH:/app/_build/"$MIX_ENV"/rel/zenflows/bin
+ENV PATH="$PATH:/app/_build/$MIX_ENV/rel/zenflows/bin"
 
 WORKDIR /app
 
 RUN set -eux; apk add --no-cache 	\
-	libstdc++ 			\
-	bash 				\
-	ncurses-libs 			\
+	libstdc++						\
+	ncurses-libs 					\
 	openssl
 
 COPY mix.exs mix.lock ./
